@@ -1,68 +1,4 @@
 import { create } from "zustand";
-import { CounterType } from "@/utils/types/counterType";
-
-const tempCounterTypes: CounterType[] = [
-  {
-    id: "1",
-    name: "Accounts",
-    abbrev: "A",
-    status: 0,
-  },
-  {
-    id: "2",
-    name: "Deposits or Withdrawals",
-    abbrev: "DW",
-    status: 0,
-  },
-  {
-    id: "3",
-    name: "Customer Service",
-    abbrev: "CS",
-    status: 0,
-  },
-  {
-    id: "4",
-    name: "Registrar",
-    abbrev: "R",
-    status: 0,
-  },
-  {
-    id: "5",
-    name: "Loans and Mortgages",
-    abbrev: "LM",
-    status: 0,
-  },
-  {
-    id: "6",
-    name: "Principal",
-    abbrev: "P",
-    status: 0,
-  },
-  {
-    id: "7",
-    name: "Accounts",
-    abbrev: "A",
-    status: 0,
-  },
-  {
-    id: "8",
-    name: "Accounts",
-    abbrev: "A",
-    status: 0,
-  },
-  {
-    id: "9",
-    name: "Accounts",
-    abbrev: "A",
-    status: 0,
-  },
-  {
-    id: "10",
-    name: "Accounts",
-    abbrev: "A",
-    status: 0,
-  },
-];
 
 type counterTypeActionType = "add" | "edit";
 
@@ -71,11 +7,10 @@ type KioskManagementStore = {
   toggleCounterTypeActionDialog: () => void;
   counterTypeActionType: counterTypeActionType;
   setCounterTypeActionType: (actionType: counterTypeActionType) => void;
-  counterTypes: CounterType[];
-  setCounterTypes: (newCategories: CounterType[]) => void;
-  editName: string | undefined;
-  editAbbrev: string | undefined;
-  setEditDetails: (name: string, abbrev: string) => void;
+  editName: string;
+  editAbbrev: string;
+  editId: string;
+  setEditDetails: (name: string, abbrev: string, id: string) => void;
   resetEditDetails: () => void;
 };
 
@@ -91,20 +26,19 @@ export const useKioskManagementStore = create<KioskManagementStore>()(
       set({
         counterTypeActionType: actionType,
       }),
-    counterTypes: tempCounterTypes,
-    setCounterTypes: (newCounterTypes) =>
-      set({ counterTypes: newCounterTypes }),
-    editName: undefined,
-    editAbbrev: undefined,
-    setEditDetails: (name, abbrev) =>
+    editName: "",
+    editAbbrev: "",
+    editId: "",
+    setEditDetails: (name, abbrev, id) =>
       set({
         editName: name,
         editAbbrev: abbrev,
+        editId: id
       }),
     resetEditDetails: () =>
       set({
-        editName: undefined,
-        editAbbrev: undefined,
+        editName: "",
+        editAbbrev: "",
       }),
   })
 );

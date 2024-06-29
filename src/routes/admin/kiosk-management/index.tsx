@@ -61,7 +61,7 @@ function KioskManagement() {
                 <button
                   onClick={() => {
                     setCounterTypeActionType("edit");
-                    setEditDetails(counterType.name, counterType.abbrev);
+                    setEditDetails(counterType.name, counterType.abbrev, counterType.id);
                     toggleCounterTypeActionDialog();
                   }}
                   className="flex items-center justify-center px-12 py-2 text-sm text-white rounded-sm bg-main_primary"
