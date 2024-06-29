@@ -19,22 +19,22 @@ function AddMonitor() {
           className="flex items-center gap-2 px-5 py-1 text-white rounded-sm bg-main_primary"
         >
           <img src="/back_icon.svg" className="size-3" />
-          <p className="font-semibold">Monitor Selection</p>
+          <p className="font-medium">Monitor Selection</p>
         </Link>
-        <button className="px-5 py-1 font-semibold rounded-sm bg-main_secondary text-main_primary">
+        <button className="px-5 py-1 font-medium rounded-sm bg-main_secondary text-main_primary">
           Preview Monitor
         </button>
         <button className="flex items-center gap-2 px-5 py-1 text-white rounded-sm bg-main_primary">
           <img src="/minus_icon.svg" className="size-3" />
-          <p className="font-semibold">Remove Monitor</p>
+          <p className="font-medium">Remove Monitor</p>
         </button>
       </div>
       <div className="flex justify-end gap-4">
-        <button className="px-5 py-1 font-semibold rounded-sm bg-main_secondary text-main_primary">
+        <button className="px-5 py-1 font-medium rounded-sm bg-main_secondary text-main_primary">
           Discard Changes
         </button>
         <button className="flex items-center gap-2 px-5 py-1 text-white rounded-sm bg-main_primary">
-          <p className="font-semibold">Save Changes</p>
+          <p className="font-medium">Save Changes</p>
         </button>
       </div>
       <div className="flex flex-1 gap-8 overflow-y-auto">

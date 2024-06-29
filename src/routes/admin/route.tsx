@@ -14,6 +14,8 @@ export const Route = createFileRoute('/admin')({
 function AdminLayout() {
   const { showAddCounterSheet: showAddCategoryDialog } =
     useMonitorManagementStore();
+  
+  console.log('PASSED THROUGH ADMIN ROUTE');
 
   const Admin = (
     <div className="flex h-screen font-poppins text-main_primary">

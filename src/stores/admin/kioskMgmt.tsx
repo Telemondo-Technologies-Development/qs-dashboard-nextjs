@@ -1,74 +1,110 @@
 import { create } from "zustand";
-import { Counter } from "@/utils/types/kiosk_types";
+import { CounterType } from "@/utils/types/counterType";
 
-const initialCategories: Counter[] = [
+const tempCounterTypes: CounterType[] = [
   {
-    counterID: 1,
-    counterName: "Accounts",
-    // counterImage: "/kiosk-images/accounts.png",
+    id: "1",
+    name: "Accounts",
+    abbrev: "A",
+    status: 0,
   },
   {
-    counterID: 2,
-    counterName: "Deposits and Withdrawals",
-    counterImage: "/kiosk-images/deposits-and-withdrawal.png",
+    id: "2",
+    name: "Deposits or Withdrawals",
+    abbrev: "DW",
+    status: 0,
+  },
+  {
+    id: "3",
+    name: "Customer Service",
+    abbrev: "CS",
+    status: 0,
+  },
+  {
+    id: "4",
+    name: "Registrar",
+    abbrev: "R",
+    status: 0,
+  },
+  {
+    id: "5",
+    name: "Loans and Mortgages",
+    abbrev: "LM",
+    status: 0,
+  },
+  {
+    id: "6",
+    name: "Principal",
+    abbrev: "P",
+    status: 0,
+  },
+  {
+    id: "7",
+    name: "Accounts",
+    abbrev: "A",
+    status: 0,
+  },
+  {
+    id: "8",
+    name: "Accounts",
+    abbrev: "A",
+    status: 0,
+  },
+  {
+    id: "9",
+    name: "Accounts",
+    abbrev: "A",
+    status: 0,
+  },
+  {
+    id: "10",
+    name: "Accounts",
+    abbrev: "A",
+    status: 0,
   },
 ];
 
+type counterTypeActionType = "add" | "edit";
+
 type KioskManagementStore = {
-  isEdit: boolean;
-  toggleEdit: () => void;
-  categories: Counter[];
-  setCategories: (newCategories: Counter[]) => void;
-  editCategories: Counter[];
-  addEditCategory: () => void;
-  removeEditCategory: (editCategoryToBeRemoved: Counter) => void;
-  resetEditCategories: () => void;
-  // setEditCategory: (newCategory: Counter) => void;
+  openCounterTypeActionDialog: boolean;
+  toggleCounterTypeActionDialog: () => void;
+  counterTypeActionType: counterTypeActionType;
+  setCounterTypeActionType: (actionType: counterTypeActionType) => void;
+  counterTypes: CounterType[];
+  setCounterTypes: (newCategories: CounterType[]) => void;
+  editName: string | undefined;
+  editAbbrev: string | undefined;
+  setEditDetails: (name: string, abbrev: string) => void;
+  resetEditDetails: () => void;
 };
 
 export const useKioskManagementStore = create<KioskManagementStore>()(
   (set) => ({
-    isEdit: false,
-    toggleEdit: () => set((state) => ({ isEdit: !state.isEdit })),
-    categories: initialCategories,
-    setCategories: (newCategories) =>
+    openCounterTypeActionDialog: false,
+    toggleCounterTypeActionDialog: () =>
+      set((state) => ({
+        openCounterTypeActionDialog: !state.openCounterTypeActionDialog,
+      })),
+    counterTypeActionType: "add",
+    setCounterTypeActionType: (actionType) =>
       set({
-        categories: newCategories,
+        counterTypeActionType: actionType,
       }),
-    editCategories: initialCategories,
-    addEditCategory: () =>
-      set((state) => ({
-        editCategories: [
-          ...state.editCategories,
-          {
-            counterID: state.editCategories.length + 1,
-            counterName: undefined,
-            counterImage: undefined,
-          },
-        ],
-      })),
-    removeEditCategory: (editCategoryToBeRemoved) =>
-      set((state) => ({
-        editCategories: state.editCategories.filter(
-          (editCategory) =>
-            editCategory.counterID !== editCategoryToBeRemoved.counterID
-        ),
-      })),
-    resetEditCategories: () => set({ editCategories: initialCategories }),
-
-    // setEditCategory: (newCategory) =>
-    //   set((state) => ({
-    //     editCategories: state.editCategories.find(
-    //       (editCategory) => editCategory.counterID === newCategory.counterID
-    //     )
-    //       ? state.editCategories.map((editCategory) => {
-    //           if (editCategory.counterID === newCategory.counterID) {
-    //             return newCategory;
-    //           } else {
-    //             return editCategory;
-    //           }
-    //         })
-    //       : [...state.editCategories, newCategory],
-    //   })),
+    counterTypes: tempCounterTypes,
+    setCounterTypes: (newCounterTypes) =>
+      set({ counterTypes: newCounterTypes }),
+    editName: undefined,
+    editAbbrev: undefined,
+    setEditDetails: (name, abbrev) =>
+      set({
+        editName: name,
+        editAbbrev: abbrev,
+      }),
+    resetEditDetails: () =>
+      set({
+        editName: undefined,
+        editAbbrev: undefined,
+      }),
   })
 );

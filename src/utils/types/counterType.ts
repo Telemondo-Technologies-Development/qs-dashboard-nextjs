@@ -10,9 +10,9 @@ export type CounterType = {
   id: string;
   name: string;
   abbrev: string;
-  currentIndex: number;
+  currentIndex?: number;
   status: number;
-  createdBy: User;
-  createdAt: Date;
-  updatedAt: Date;
+  createdBy?: User;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

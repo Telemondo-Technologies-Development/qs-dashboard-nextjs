@@ -11,7 +11,7 @@ export default function MonitorCard({ index }: MonitorCardProps) {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 px-6 py-4 rounded-lg size-full bg-main_extra">
-      <p className="font-bold">Monitor {index + 1}</p>
+      <p className="font-semibold">Monitor {index + 1}</p>
       <MiniMonitorPreview />
       <div className="flex justify-center w-full gap-4">
         <button 

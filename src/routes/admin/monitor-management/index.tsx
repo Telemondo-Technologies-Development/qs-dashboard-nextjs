@@ -15,7 +15,7 @@ function MonitorManagement() {
           className="flex items-center justify-between flex-grow-0 gap-3 px-5 py-1 rounded-md bg-main_primary"
         >
           <img src="/plus_icon.svg" className="size-3" />
-          <p className="font-semibold text-white">Add Monitor</p>
+          <p className="font-medium text-white">Add Monitor</p>
         </Link>
       </div>
       <div className="grid flex-1 grid-cols-3 gap-x-5 gap-y-5">

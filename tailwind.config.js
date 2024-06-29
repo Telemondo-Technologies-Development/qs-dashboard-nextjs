@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      gridTemplateColumns: {
+        'auto-fill-200': 'repeat(auto-fill, minmax(200px, 1fr))',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -85,9 +88,9 @@ module.exports = {
         "mobile-s": "320px",
         "mobile-m": "375px",
         "mobile-l": "425px",
-        "1220":"1220px",
-        "1800": "1800px",
-        "1500":"1500px",
+        1220: "1220px",
+        1800: "1800px",
+        1500: "1500px",
         "4k": "2560px",
       },
     },

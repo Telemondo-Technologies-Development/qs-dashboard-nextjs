@@ -1,4 +1,5 @@
 import { useUserData } from "@/api/auth";
+import UserDropDown from "./-UserDropDown";
 
 export default function AdminHeader() {
   const { data: userData, error } = useUserData();
@@ -21,13 +22,7 @@ export default function AdminHeader() {
         <img src="/notification.svg" className="size-5" />
         <div className="flex items-center gap-[10px]">
           <img src="/user-icon.svg" className="size-5" />
-          <p className="text-sm font-bold">
-            {error
-              ? error.message
-              : userData
-                ? `${userData.firstName} ${userData.lastName}`
-                : "Loading..."}
-          </p>
+          <UserDropDown />
         </div>
       </div>
     </div>
