@@ -3,6 +3,7 @@ import RenderBasedOnRole from "../-RenderBasedOnRole";
 import { useGetUsers } from "@/api/users";
 import { useUserManagementStore } from "@/stores/admin/userMgmt";
 import UserActionDialog from "./-UserActionDialog";
+import UserCard from "./-UserCard";
 
 export const Route = createFileRoute("/admin/user-management/")({
   component: () => <UserManagement />,
@@ -10,7 +11,8 @@ export const Route = createFileRoute("/admin/user-management/")({
 
 function UserManagement() {
   const { data: users, isLoading, error } = useGetUsers();
-  const { toggleUserActionDialog } = useUserManagementStore();
+  const { toggleUserActionDialog, setUserActionType } =
+    useUserManagementStore();
 
   const loadingScreen = (
     <div className="grid flex-1 text-xl font-semibold place-items-center">
@@ -29,7 +31,10 @@ function UserManagement() {
       <UserActionDialog />
       <div className="flex justify-end pr-8">
         <button
-          onClick={() => toggleUserActionDialog()}
+          onClick={() => {
+            setUserActionType("add");
+            toggleUserActionDialog();
+          }}
           className="px-6 py-1 font-medium text-white rounded-sm bg-main_primary"
         >
           Add Employee
@@ -40,16 +45,9 @@ function UserManagement() {
       ) : error ? (
         errorScreen
       ) : (
-        <div className="grid flex-1 pr-8 overflow-y-auto grid-cols-auto-fill-250 gap-y-5 gap-x-5">
+        <div className="grid flex-1 pr-8 overflow-y-auto grid-cols-auto-fill-225 gap-y-5 gap-x-5">
           {users?.content.map((user) => {
-            return (
-              <div
-                key={user.id}
-                className="w-full rounded-xl h-72 bg-main_extra"
-              >
-                {user.email}
-              </div>
-            );
+            return <UserCard key={user.id} user={user} />;
           })}
         </div>
       )}

@@ -13,9 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import { IconLoader2 } from "@tabler/icons-react";
-import { useUserManagementStore } from "@/stores/admin/userMgmt";
-import { useState } from "react";
+import { useUserManagementStore, userType } from "@/stores/admin/userMgmt";
+import { useEffect, useState } from "react";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAddUser, useRemoveUser } from "@/api/users";
 
 const formSchema = z
   .object({
@@ -92,29 +94,82 @@ const formSchema = z
     );
   });
 
-function onSubmit(values: z.infer<typeof formSchema>) {
-  //do stuff
-}
-
-type userType = "Admin" | "Employee";
-
 export default function UserActionDialog() {
   const queryClient = useQueryClient();
-  const [selectedUserType, setSelectedUserType] =
+  const [selectedUserRole, setSelectedUserRole] =
     useState<userType>("Employee");
-  const { openUserActionDialog, toggleUserActionDialog } =
-    useUserManagementStore();
+  const {
+    toggleUserActionDialog,
+    userActionType,
+    openUserActionDialog,
+    editUser,
+  } = useUserManagementStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      userName: "",
+      firstName: editUser ? editUser.firstName : "",
+      lastName: editUser ? editUser.lastName : "",
+      userName: editUser ? editUser.username : "",
       password: "",
       confirmPassword: "",
-      email: "",
+      email: editUser ? editUser.email : "",
     },
   });
+
+  useEffect(() => {
+    console.log(editUser);
+    if (userActionType === "edit") {
+      setSelectedUserRole(
+        editUser?.authorities[0].authority === "ROLE_ADMIN"
+          ? "Admin"
+          : "Employee"
+      );
+    } else {
+      setSelectedUserRole("Employee");
+    }
+  }, [userActionType, editUser, openUserActionDialog]);
+
+  const {
+    mutateAsync: removeUser,
+    isPending: isRemoveUserPending,
+    error: removeUserError,
+  } = useRemoveUser(
+    editUser?.id ?? "",
+    editUser?.email ?? "",
+    editUser?.username ?? "",
+    editUser?.firstName ?? "",
+    editUser?.lastName ?? "",
+    editUser?.authorities[0].authority ?? "",
+    queryClient
+  );
+
+  const {
+    mutateAsync: addUser,
+    isPending: isAddUserPending,
+    error: addUserError,
+  } = useAddUser(
+    form.getValues().email,
+    form.getValues().userName,
+    form.getValues().password,
+    form.getValues().firstName,
+    form.getValues().lastName,
+    selectedUserRole === "Admin" ? "ROLE_ADMIN" : "ROLE_STAFF",
+    queryClient
+  );
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (userActionType === "add") {
+      await addUser();
+      if (!addUserError) {
+        form.reset();
+        toggleUserActionDialog();
+      }
+    } else {
+      //edit user, check if password and confpasword is not empty, override password if false.
+      toggleUserActionDialog();
+    }
+  }
+
   return (
     <AlertDialog open={openUserActionDialog}>
       <AlertDialogContent className="max-w-xl overflow-hidden font-poppins">
@@ -125,7 +180,11 @@ export default function UserActionDialog() {
           >
             <section className="flex flex-col gap-4 p-8 overflow-y-auto max-h-[80vh]">
               <section className="flex items-center gap-6">
-                <div className="rounded-full bg-main_primary size-24"></div>
+                <Avatar className="size-24">
+                  <AvatarFallback className="text-white bg-main_primary">
+                    KBQS
+                  </AvatarFallback>
+                </Avatar>
                 <div className="flex flex-col justify-between flex-1 gap-2">
                   <div className="flex items-center justify-between pt-1">
                     <button
@@ -174,7 +233,7 @@ export default function UserActionDialog() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel className="text-sm">First Name</FormLabel>
+                        <FormLabel className="text-sm">Last Name</FormLabel>
                         <FormControl>
                           <Input
                             maxLength={30}
@@ -212,12 +271,20 @@ export default function UserActionDialog() {
                     name="password"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel className="text-sm">Password</FormLabel>
+                        <FormLabel className="text-sm">
+                          {userActionType === "add"
+                            ? "Password"
+                            : "New Password"}
+                        </FormLabel>
                         <FormControl>
                           <PasswordInput
                             maxLength={30}
                             className="text-sm rounded-full focus-visible:ring-main_primary ring-offset-main_primary focus-visible:ring-offset-0 focus-visible:ring-1 ring-offset-1 border-main_primary"
-                            placeholder="Enter Password"
+                            placeholder={
+                              userActionType === "add"
+                                ? "Enter Password"
+                                : "Enter New Password"
+                            }
                             {...field}
                           />
                         </FormControl>
@@ -235,7 +302,11 @@ export default function UserActionDialog() {
                           <PasswordInput
                             maxLength={30}
                             className="text-sm rounded-full focus-visible:ring-main_primary ring-offset-main_primary focus-visible:ring-offset-0 focus-visible:ring-1 ring-offset-1 border-main_primary"
-                            placeholder="Re-type Password"
+                            placeholder={
+                              userActionType === "add"
+                                ? "Re-type Password"
+                                : "Re-type New Password"
+                            }
                             {...field}
                           />
                         </FormControl>
@@ -269,24 +340,26 @@ export default function UserActionDialog() {
                   <p className="text-sm font-medium">User Type</p>
                   <div className="flex gap-4">
                     <button
-                      onClick={() => setSelectedUserType("Admin")}
+                      onClick={() => setSelectedUserRole("Admin")}
                       type="button"
-                      className={`flex items-center flex-1 gap-2 py-2 text-sm border rounded-full ${selectedUserType === "Admin" ? "bg-main_extra" : ""} border-main_primary`}
+                      className={`flex items-center flex-1 gap-2 py-2 text-sm ${editUser ? (editUser.authorities[0].authority === "ROLE_ADMIN" ? "border-2" : "border") : "border"} rounded-full ${selectedUserRole === "Admin" ? "bg-main_extra" : ""} border-main_primary`}
                     >
-                      <div className="relative grid ml-6 border rounded-full border-main_primary size-3 place-items-center">
-                        {selectedUserType === "Admin" && (
+                      <div
+                        className={`relative grid ml-6 border rounded-full border-main_primary size-3 place-items-center`}
+                      >
+                        {selectedUserRole === "Admin" && (
                           <div className="bg-main_primary size-[60%] rounded-full"></div>
                         )}
                       </div>
                       <p>Admin</p>
                     </button>
                     <button
-                      onClick={() => setSelectedUserType("Employee")}
+                      onClick={() => setSelectedUserRole("Employee")}
                       type="button"
-                      className={`flex items-center flex-1 gap-2 py-2 text-sm border rounded-full ${selectedUserType === "Employee" ? "bg-main_extra" : ""} border-main_primary`}
+                      className={`${editUser ? (editUser.authorities[0].authority === "ROLE_STAFF" ? "border-2" : "border") : "border"} flex items-center flex-1 gap-2 py-2 text-sm border rounded-full ${selectedUserRole === "Employee" ? "bg-main_extra" : ""} border-main_primary`}
                     >
                       <div className="relative grid ml-6 border rounded-full border-main_primary size-3 place-items-center">
-                        {selectedUserType === "Employee" && (
+                        {selectedUserRole === "Employee" && (
                           <div className="bg-main_primary size-[60%] rounded-full"></div>
                         )}
                       </div>
@@ -295,24 +368,41 @@ export default function UserActionDialog() {
                   </div>
                 </div>
               </section>
-              <section className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-lg font-semibold">Remove Employee</p>
-                  <p className="text-xs">Permanently delete an account.</p>
-                </div>
-                <button
-                  type="button"
-                  className="flex items-center gap-3 px-5 py-2 font-semibold rounded-md disabled:bg-slate-400 text-main_primary bg-main_secondary"
-                >
-                  <div className="w-3 h-[3px] rounded-full bg-main_primary"></div>
-                  <p>Delete Account</p>
-                </button>
-              </section>
+              {userActionType === "edit" && (
+                <section className="flex items-center justify-between">
+                  <div className="flex-1 space-y-2">
+                    <p className="text-lg font-semibold">Remove Employee</p>
+                    <p className="text-xs">Permanently delete an account.</p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      await removeUser();
+                      if (!removeUserError) {
+                        form.reset();
+                        toggleUserActionDialog();
+                      }
+                    }}
+                    type="button"
+                    disabled={isRemoveUserPending || isAddUserPending}
+                    className="flex items-center justify-center flex-1 gap-3 px-5 py-2 font-semibold rounded-md ml-14 disabled:bg-slate-400 text-main_primary bg-main_secondary"
+                  >
+                    {isRemoveUserPending ? (
+                      <IconLoader2 />
+                    ) : (
+                      <>
+                        <div className="w-3 h-[3px] rounded-full bg-main_primary"></div>
+                        <p>Delete Account</p>
+                      </>
+                    )}
+                  </button>
+                </section>
+              )}
             </section>
 
             <section className="flex items-center justify-center gap-8 py-4 bg-gray-300">
               <button
                 onClick={() => toggleUserActionDialog()}
+                disabled={isRemoveUserPending || isAddUserPending}
                 type="button"
                 className="w-1/4 py-2 font-semibold rounded-md disabled:bg-slate-400 text-main_primary bg-main_secondary"
               >
@@ -320,9 +410,10 @@ export default function UserActionDialog() {
               </button>
               <button
                 type="submit"
+                disabled={isRemoveUserPending || isAddUserPending}
                 className="w-1/4 py-2 font-semibold text-white rounded-md disabled:bg-slate-400 bg-main_primary"
               >
-                Confirm
+                {isAddUserPending ? <IconLoader2 /> : "Confirm"}
               </button>
             </section>
           </form>
