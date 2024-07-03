@@ -18,7 +18,9 @@ module.exports = {
     },
     extend: {
       gridTemplateColumns: {
-        'auto-fill-200': 'repeat(auto-fill, minmax(200px, 1fr))',
+        "auto-fill-200": "repeat(auto-fill, minmax(200px, 1fr))",
+        "auto-fill-225": "repeat(auto-fill, minmax(225px, 1fr))",
+        "auto-fill-250": "repeat(auto-fill, minmax(250px, 1fr))",
       },
       colors: {
         border: "hsl(var(--border))",
@@ -93,6 +95,13 @@ module.exports = {
         1500: "1500px",
         "4k": "2560px",
       },
+      fontSize: {
+        "2xs": "10px",
+      },
+      //   .text-xs {
+      //     font-size: 0.75rem /* 12px */;
+      //     line-height: 1rem /* 16px */;
+      // }
     },
   },
   plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar")],

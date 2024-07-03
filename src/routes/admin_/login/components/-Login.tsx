@@ -14,6 +14,7 @@ import { IconLoader2 } from "@tabler/icons-react";
 import { login } from "@/api/auth";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { PasswordInput } from "@/components/ui/password-input";
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
@@ -103,10 +104,9 @@ export default function Login() {
             render={({ field, fieldState }) => (
               <FormItem className="w-[130%] h-[30px]">
                 <FormControl>
-                  <Input
+                  <PasswordInput
                     placeholder="password"
                     {...field}
-                    type="password"
                     className={`${
                       fieldState.error
                         ? "border-red-500 placeholder-red-500"
