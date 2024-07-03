@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import { Minus, Plus } from "lucide-react";
 import { useCounters } from "@/api/countermngmt";
 import { isEmpty } from "radash";
+import LoadingScreen from "./components/-LoadingScreen";
+import ErrorScreen from "./components/-ErrorScreen";
 
 export const Route = createFileRoute("/admin/counter-management/")({
   component: () => <CounterManagement />,
@@ -25,16 +27,6 @@ function CounterManagement() {
   }, []);
   const { data: counters, error, isLoading } = useCounters();
   console.log(counters);
-  const loadingScreen = (
-    <div>
-      <p>loading...</p>
-    </div>
-  );
-  const errorScreen = (
-    <div>
-      <p>error</p>
-    </div>
-  );
 
   // const toggleEditing = useCounterMngmtStore((state) => state.toggleEditing);
   const Admin = (
@@ -84,12 +76,12 @@ function CounterManagement() {
       </div>
 
       <div className="pb-8 overflow-y-scroll pt-4">
-        <div className="grid lg:grid-cols-3 lg:px-10 lg:gap-10 xl:gap-x-10 1500:grid-cols-4 1800:grid-cols-5 4k:flex 4k:flex-wrap place-items-center ">
-          {/* {isLoading ? loadingScreen : `${error ? errorScreen : counters?.content.map((counter) => return()) */}
+        {/* <div className="grid lg:grid-cols-3 lg:px-10 lg:gap-10 xl:gap-x-10 1500:grid-cols-4 1800:grid-cols-5 4k:flex 4k:flex-wrap place-items-center "> */}
+        <div className="grid  lg:grid-cols-auto-fill-200 xl:grid-cols-auto-fill-250 gap-x-5 gap-y-5 px-10">
           {isLoading
-            ? loadingScreen
+            ? LoadingScreen()
             : error
-              ? errorScreen
+              ? ErrorScreen()
               : !editing
                 ? counters?.content.map((counter) => {
                     return (
@@ -180,7 +172,7 @@ function CounterManagement() {
                   <Plus className="text-white" size={15} />
                 </button>
               </div>
-              <div className="flex flex-col lg:h-[16rem] lg:w-[15.5rem] xl:h-[18rem] xl:w-[17.5rem] rounded-xl py-5 border-gray-400 border-dashed border-2 justify-center items-center font-semibold text-center text-2xl opacity-50">
+              <div className="flex flex-col lg:h-72 w-full rounded-xl py-5 border-gray-400 border-dashed border-2 justify-center items-center font-semibold text-center text-2xl opacity-50">
                 <p>
                   ADD <br /> COUNTER
                 </p>

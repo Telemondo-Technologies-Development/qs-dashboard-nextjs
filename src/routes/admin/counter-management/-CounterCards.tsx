@@ -36,7 +36,7 @@ export default function CounterCards({
 
   return (
     <div>
-      <Card className="flex flex-col  justify-between lg:h-[16rem] lg:w-[15.5rem] xl:h-[18rem] xl:w-[17.5rem]  bg-blue-100 rounded-xl py-5">
+      <Card className="flex flex-col  justify-between h-72 w-[full]  bg-blue-100 rounded-xl py-5">
         <div>
           <CardHeader className="flex flex-col items-center justify-center py-0">
             {!editing ? (
@@ -78,7 +78,11 @@ export default function CounterCards({
             <div className="flex flex-col justify-center w-full px-3 mx-4 mt-2 bg-white text-main_primary rounded-xl h-14 lg:text-xs xl:text-sm ">
               <div className="flex flex-row items-center justify-between text-right">
                 <p>Managed</p>
-                {!editing ? <p>{counterType.name}</p> : <ComboboxDemo />}
+                {!editing ? (
+                  <p>{counterType.name}</p>
+                ) : (
+                  <ComboboxDemo counterType={counterType} />
+                )}
               </div>
             </div>
             <button className="w-auto px-4 text-white rounded-sm h-7 bg-main_primary lg:text-xs xl:text-sm">
