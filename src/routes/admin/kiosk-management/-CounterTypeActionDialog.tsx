@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import { useAddCounterType, useRemoveCounterType } from "@/api/counterType";
 import { useQueryClient } from "@tanstack/react-query";
 import { IconLoader2 } from "@tabler/icons-react";
-import { useEffect } from "react";
 
 const formSchema = z.object({
   counterTypeName: z
@@ -166,14 +165,14 @@ export default function CounterTypeActionDialog() {
                   form.reset();
                   toggleCounterTypeActionDialog();
                 }}
-                className="w-1/4 py-2 text-sm font-medium rounded-md disabled:bg-slate-400 text-main_primary bg-main_secondary"
+                className="w-1/4 py-2 font-semibold rounded-md disabled:bg-slate-400 text-main_primary bg-main_secondary"
               >
                 Cancel
               </button>
               <button
                 disabled={isRemoveCounterTypePending || isAddCounterTypePending}
                 type="submit"
-                className="w-1/4 py-2 text-sm font-medium text-white rounded-md disabled:bg-slate-400 bg-main_primary"
+                className="w-1/4 py-2 font-semibold text-white rounded-md disabled:bg-slate-400 bg-main_primary"
               >
                 Confirm
               </button>

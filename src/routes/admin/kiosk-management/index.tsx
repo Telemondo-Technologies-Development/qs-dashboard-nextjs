@@ -3,7 +3,7 @@ import { useKioskManagementStore } from "@/stores/admin/kioskMgmt";
 import { useAdminGlobalStore } from "@/stores/admin/adminGlobalStore";
 import RenderBasedOnRole from "../-RenderBasedOnRole";
 import CounterTypeActionDialog from "./-CounterTypeActionDialog";
-import { useFetchCounterTypes } from "@/api/counterType";
+import { useGetCounterTypes } from "@/api/counterType";
 import { countertypes } from "@/utils/variables/admin_variables";
 
 export const Route = createFileRoute("/admin/kiosk-management/")({
@@ -19,7 +19,19 @@ function KioskManagement() {
 
   const { togglePreviewDialog } = useAdminGlobalStore();
 
-  const { data: counterTypes, isLoading, error } = useFetchCounterTypes();
+  const { data: counterTypes, isLoading, error } = useGetCounterTypes();
+
+  const loadingScreen = (
+    <div className="grid flex-1 text-xl font-semibold place-items-center">
+      Loading...
+    </div>
+  );
+
+  const errorScreen = (
+    <div className="grid flex-1 text-lg font-semibold place-items-center">
+      Error: {error?.message}
+    </div>
+  );
 
   const Admin = (
     <div className="flex flex-col flex-1 p-8 overflow-y-auto transition-all gap-7">
@@ -41,9 +53,7 @@ function KioskManagement() {
         </button>
       </div>
       {isLoading ? (
-        <div className="grid flex-1 text-xl font-semibold place-items-center">
-          Loading...
-        </div>
+        loadingScreen
       ) : counterTypes ? (
         <div className="grid flex-1 overflow-y-auto gap-y-5 gap-x-5 grid-cols-auto-fill-200">
           {counterTypes.content.map((counterType) => {
@@ -61,7 +71,11 @@ function KioskManagement() {
                 <button
                   onClick={() => {
                     setCounterTypeActionType("edit");
-                    setEditDetails(counterType.name, counterType.abbrev, counterType.id);
+                    setEditDetails(
+                      counterType.name,
+                      counterType.abbrev,
+                      counterType.id
+                    );
                     toggleCounterTypeActionDialog();
                   }}
                   className="flex items-center justify-center px-12 py-2 text-sm text-white rounded-sm bg-main_primary"
@@ -73,9 +87,7 @@ function KioskManagement() {
           })}
         </div>
       ) : (
-        <div className="grid flex-1 text-lg font-semibold place-items-center">
-          Error: {error?.message}
-        </div>
+        errorScreen
       )}
     </div>
   );

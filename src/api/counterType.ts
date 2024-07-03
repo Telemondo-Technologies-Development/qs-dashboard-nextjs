@@ -2,14 +2,14 @@ import axios from "axios";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { CounterType, CounterTypes } from "@/utils/types/counterType";
 
-export function useFetchCounterTypes() {
+export function useGetCounterTypes() {
   return useQuery({
     queryKey: ["counterTypes"],
     queryFn: async () => {
-      const { data: counterTypes } = await axios.get(
+      const { data: getCounterTypesResponse } = await axios.get(
         "/api/domain/counter/type?status=0,1,2"
       );
-      return counterTypes.data as CounterTypes;
+      return getCounterTypesResponse.data as CounterTypes;
     },
     staleTime: Infinity,
     refetchOnWindowFocus: false,
