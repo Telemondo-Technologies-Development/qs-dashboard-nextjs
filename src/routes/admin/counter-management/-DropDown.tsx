@@ -17,10 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-import { countertypes } from "@/utils/variables/admin_variables";
 import { useState } from "react";
-import { useFetchCounterTypes } from "@/api/counterType";
+import { useGetCounterTypes } from "@/api/counterType";
 import { CounterType } from "@/utils/types/counterType";
 import LoadingScreen from "./components/-LoadingScreen";
 import ErrorScreen from "./components/-ErrorScreen";
@@ -35,7 +33,7 @@ export function ComboboxDemo({ counterType }: ComboboxDemoProps) {
     counterType.name
   );
   const [counterTypeId, setCounterTypeId] = useState(counterType.id);
-  const { data: countertypes, isLoading, error } = useFetchCounterTypes();
+  const { data: countertypes, isLoading, error } = useGetCounterTypes();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,10 +42,10 @@ export function ComboboxDemo({ counterType }: ComboboxDemoProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-28 justify-between "
+          className="justify-between w-28 "
         >
-          <p className=" overflow-hidden truncate text-xs">{counterTypeName}</p>
-          <ChevronsUpDown className="ml-2 size-3 shrink-0 opacity-50" />
+          <p className="overflow-hidden text-xs truncate ">{counterTypeName}</p>
+          <ChevronsUpDown className="ml-2 opacity-50 size-3 shrink-0" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
